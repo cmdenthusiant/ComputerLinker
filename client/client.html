@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<body style="margin: 0; overflow: hidden;" oncontextmenu="return false;">
+    <img id="screen" style="width: 100%;height: 100%;border: none;" draggable="false"></img>
+    <script>
+        let ws = new WebSocket('ws://localhost:80');
+        let screenshot = document.getElementById('screen');
+        let reader = new FileReader();
+        let encoder = new TextEncoder();
+        let newMouseCoord = null;
+        let keyPressed = [];
+        reader.onloadend = ()=>screenshot.src = 'data:image/png;base64,'+reader.result.split('base64,')[1];
+        ws.onmessage = event=>{
+            reader.readAsDataURL(event.data);
+        }
+        document.addEventListener('mousemove',event=>newMouseCoord=[event.clientX/window.innerWidth,event.clientY/window.innerHeight]);
+        document.addEventListener('mousedown',event=>{
+            event.preventDefault();
+            ws.send(encoder.encode('1 '+event.button));
+        });
+        document.addEventListener('mouseup',event=>{
+            event.preventDefault();
+            ws.send(encoder.encode('2 '+event.button));
+        });
+        document.addEventListener('keydown',event=>{
+            if(event.key!='F11')event.preventDefault();
+            if(!keyPressed.includes(event.key)) {
+                keyPressed.push(event.key);
+                ws.send(encoder.encode('3 '+event.key));
+            }
+        });
+        document.addEventListener('keyup',event=>{
+            if(event.key!='F11')event.preventDefault();
+            if(keyPressed.includes(event.key)) {
+                keyPressed.splice(keyPressed.indexOf(event.key),1);
+                ws.send(encoder.encode('4 '+event.key));
+            }
+            
+        });
+        setInterval(()=>{
+            if(newMouseCoord!=null) {
+                console.log()
+                ws.send(encoder.encode('0 '+newMouseCoord[0]+' '+newMouseCoord[1]));
+                newMouseCoord = null;
+            }
+        },150);
+    </script>
+</body>

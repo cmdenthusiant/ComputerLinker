@@ -1,0 +1,10 @@
+import pynput,sys,screeninfo
+mouseButtons = [pynput.mouse.Button.left,pynput.mouse.Button.middle,pynput.mouse.Button.right,pynput.mouse.Button.x1,pynput.mouse.Button.x2]
+keyboardButton = {'Escape':pynput.keyboard.Key.esc,'Tab':pynput.keyboard.Key.tab,'CapsLock':pynput.keyboard.Key.caps_lock,'Shift':pynput.keyboard.Key.shift,'Control':pynput.keyboard.Key.ctrl,'Alt':pynput.keyboard.Key.alt,'Meta':pynput.keyboard.Key.cmd,'ContextMenu':pynput.keyboard.Key.menu,'Enter':pynput.keyboard.Key.enter,'Backspace':pynput.keyboard.Key.backspace,'ArrowLeft':pynput.keyboard.Key.left,'ArrowRight':pynput.keyboard.Key.right,'ArrowUp':pynput.keyboard.Key.up,'ArrowDown':pynput.keyboard.Key.down,'PrintScreen':pynput.keyboard.Key.print_screen,'Insert':pynput.keyboard.Key.insert,'Delete':pynput.keyboard.Key.delete,'Home':pynput.keyboard.Key.home,'End':pynput.keyboard.Key.end,'PageUp':pynput.keyboard.Key.page_up,'PageDown':pynput.keyboard.Key.page_down,'NumLock':pynput.keyboard.Key.num_lock,'F1':pynput.keyboard.Key.f1,'F2':pynput.keyboard.Key.f2,'F3':pynput.keyboard.Key.f3,'F4':pynput.keyboard.Key.f4,'F5':pynput.keyboard.Key.f5,'F6':pynput.keyboard.Key.f6,'F7':pynput.keyboard.Key.f7,'F8':pynput.keyboard.Key.f8,'F9':pynput.keyboard.Key.f9,'F10':pynput.keyboard.Key.f10,'F11':pynput.keyboard.Key.f11,'F12':pynput.keyboard.Key.f12,'space':pynput.keyboard.Key.space}
+if sys.argv[1] == '0':
+    screen = screeninfo.get_monitors()
+    pynput.mouse.Controller().position = (int(float(sys.argv[2])*screen[0].width),int(float(sys.argv[3])*screen[0].height))
+if sys.argv[1] == '1':pynput.mouse.Controller().press(mouseButtons[int(sys.argv[2])])
+if sys.argv[1] == '2':pynput.mouse.Controller().release(mouseButtons[int(sys.argv[2])])
+if sys.argv[1] == '3':pynput.keyboard.Controller().press(keyboardButton[sys.argv[2]] if sys.argv[2] in keyboardButton else sys.argv[2])
+if sys.argv[1] == '4':pynput.keyboard.Controller().release(keyboardButton[sys.argv[2]] if sys.argv[2] in keyboardButton else sys.argv[2])
